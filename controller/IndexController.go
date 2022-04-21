@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"gin/services/userService"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

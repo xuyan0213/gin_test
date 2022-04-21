@@ -8,7 +8,7 @@ import (
 
 var DB *gorm.DB
 
-func Init() {
+func InitMysql() {
 	dsn := config.Viper.GetString("mysql.dsn")
 	DB, _ = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	return

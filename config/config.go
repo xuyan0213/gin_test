@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 	"log"
 	"os"
@@ -21,12 +22,14 @@ func Init() {
 	Viper.AddConfigPath(path + "/config")
 	Viper.SetConfigName("config")
 	Viper.SetConfigType("yaml")
-	fmt.Printf("%s\n", path)
 	err = Viper.ReadInConfig() // 读取配置信息
 	if err != nil {            // 读取配置信息失败
-
-		// Config file was found but another error was produced
 		log.Println("read config error")
 		log.Fatal(err) // 读取配置文件失败致命错误
 	}
+	//监控配置文件变化
+	Viper.WatchConfig()
+	Viper.OnConfigChange(func(e fsnotify.Event) {
+		fmt.Println("Config file changed:", e.Name)
+	})
 }

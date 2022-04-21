@@ -3,8 +3,10 @@ package userService
 import (
 	"gin/models"
 	"gin/services/helper"
+	"gin/services/session"
 	"gin/services/validator"
 	"github.com/gin-gonic/gin"
+	"strconv"
 
 	"net/http"
 )
@@ -52,8 +54,28 @@ func Login(c *gin.Context) {
 			"avatar_id": avatarId,
 		})
 	}
-	//保存用户session
-	if userInfo.ID > 0 {
 
+	if userInfo.ID > 0 {
+		//保存用户session
+		session.SaveUserSession(c, strconv.Itoa(int(userInfo.ID)))
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"msg":  "登录成功",
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 10003,
+			"msg":  "登录失败",
+		})
 	}
+}
+
+func Logout(c *gin.Context) {
+	session.ClearSession(c)
+	c.Redirect(http.StatusFound, "/")
+	return
+}
+
+func GetUserInfo(c *gin.Context) map[string]interface{} {
+	return session.GetSessionUserInfo(c)
 }
